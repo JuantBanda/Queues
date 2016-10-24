@@ -20,11 +20,13 @@ def main():
         N=0
         while(t<T):
             tn=DEXP.genexp()
-            N+=N+1
+            N+=1
             t+=tn
         Nprom+=N-1
         tprom+=t
 
-    print("El número de entradas promedio es N=",Nprom/repetir, "con un tiempo prom en el sistema:",(Nprom/repetir)/lam)
+    print("Entradas prom N=",Nprom/repetir, "en un tiempo prom:",(Nprom/repetir)/lam, "(experimental)")
+    print("Entradas prom N=",lam*T, "en un tiempo prom:",T, "(teórico)")
+
 if(__name__=="__main__"):
     main()
