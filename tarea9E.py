@@ -9,22 +9,21 @@ class exponencial:
         return -ln(ru(0,1))/self.l
 
 def main():
-    lam=1.5#tasa de llegada
+    lam=2#tasa de llegada
     mu=.7#tasa de servicio
     DE=exponencial(lam)
     DS=exponencial(mu)
 
-
-    TT=10
+    #MM33
+    TT=100
     T=0
     s=3#número de servidores
+    NEM=3#número máximo de cliente en la cola
     so=0#servidores ocupados
-    ne=0#nueva entrada
-    ns=10000#nueva salida
     N=0 #clientes en el sistema
     NA=0#clientes atendidos
     NE=0#clientes en espera
-    xns=1000
+    NF=0#número de clientes que no entran a la cola
     llegadas=list()
     salidas=list()
     tiempos=list()
@@ -39,22 +38,15 @@ def main():
     N=len(llegadas)-1
     #print("##############################################################")
     #print("llegadas", llegadas)
-    #print("##############################################################")
-    #print("num clientes",len(llegadas)-1)
-    #ne=llegadas.pop(0)
-    ne=0
-    ns=1000
-    #tiempos=[1.5,1.75,1.9,2.5,5,6.3,7,9,9.5, 10.1]
-    #print(tiempos)
-    #print("_____________________")
-
+    ne=llegadas.pop(0)
+    Ta=tiempos[0]
+    NE=0#clientes en espera de servicio
     while(T<TT):
         T=tiempos.pop(0)
         #print(ne)
-        if(ne<ns):
+        if(T==ne):
             ne=llegadas.pop(0)
-
-            if(so<2):
+            if(so<s):
                 ts=DS.genexp()
                 #print("ts",ts)
                 salidas.append(T+ts)
@@ -63,25 +55,34 @@ def main():
                 tiempos.sort()
                 NA+=1
                 so+=1
-                ns=salidas[0]
+            else:
+                if(NE==NEM):
+                    NF+=1
+                else:
+                    NE+=1
         else:
             ns=salidas.pop(0)
             so-=1
-            if(len(salidas)==0):
-                ns=1000
+            if(NE>0):
+                ts=DS.genexp()
+                #print("ts holas>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",ts)
+                salidas.append(T+ts)
+                salidas.sort()
+                tiempos.append(T+ts)
+                tiempos.sort()
+                NA+=1
+                so+=1
+                NE-=NE
 
         if(len(llegadas)==0):
             break
 
-#        print("Reloj",T)
-#        print("salidas",salidas)
-#        print("ne>>", ne)
-#        print("ns>>", ns)
-#        print("_____________________")
-    #print("tiempos", tiempos)
-    #print("clientes atendidos", NA)
+        #print("Reloj",T)
+        #print("salidas",salidas)
+        #print("_____________________")
 
-    print("Núm clientes",N,">>Clientes atendidos", NA,">>t de sim", T )
+    print("Núm cl>>",N,"Cl atendidos>>", NA-len(salidas),
+    "Cl en cola>>",N-NA-NF,"cl en serv>>",len(salidas), "Fuga de cl>>",NF,"t de sim>>", T )
 
 
 
